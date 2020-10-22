@@ -6,11 +6,21 @@ metadata:
 spec:
   type: Scala
   mode: cluster
-  image: "gcr.io/spark-operator/spark:v3.0.0"
-  imagePullPolicy: Always
+  image: "spark-history-server:latest"
+  imagePullPolicy: Never
   mainClass: org.apache.spark.examples.SparkPi
   mainApplicationFile: "local:///opt/spark/examples/jars/spark-examples_2.12-3.0.0.jar"
   sparkVersion: "3.0.0"
+  sparkConf:
+    spark.eventLog.enabled: "true"
+    spark.eventLog.dir: "s3a://spark-events/logs/"
+  hadoopConf:
+    fs.s3a.endpoint: "http://minio-published:9000"
+    fs.s3a.access.key: "AKIAIOSFODNN7EXAMPLE"
+    fs.s3a.secret.key: "wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY"
+    fs.s3a.path.style.access: "true"
+    fs.s3a.impl: "org.apache.hadoop.fs.s3a.S3AFileSystem"
+    fs.s3a.connection.ssl.enabled: "false"
   restartPolicy:
     type: Never
   volumes:
